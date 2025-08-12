@@ -9,6 +9,7 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarInset,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { DashboardNav } from './dashboard-nav';
@@ -35,7 +36,10 @@ export function DashboardClientLayout({ children }: { children: React.ReactNode 
       </Sidebar>
       <SidebarInset>
         <header className="flex h-14 items-center justify-between border-b bg-card px-4">
-          <h1 className="text-lg font-semibold">Welcome to ProcessPulse</h1>
+           <div className="flex items-center gap-2">
+             <SidebarTrigger className="md:hidden" />
+            <h1 className="text-lg font-semibold">Welcome to ProcessPulse</h1>
+          </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
