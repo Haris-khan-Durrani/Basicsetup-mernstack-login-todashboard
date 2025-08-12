@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Building2, CalendarClock, CalendarX2, FileCheck2, FileClock, type LucideIcon } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, LineChart, Line, PieChart, Pie, Tooltip as RechartsTooltip, Cell, Legend } from "recharts"
 import type { Company } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -42,12 +42,12 @@ const stats = {
   totalExpired: companies.filter(c => new Date(c.expirationDate) < today).length,
 };
 
-const chartData = [
+const barChartData = [
   { status: "Pending", count: stats.docsPending, fill: "hsl(var(--chart-1))" },
   { status: "Submitted", count: stats.docsSubmitted, fill: "hsl(var(--chart-2))" },
 ];
 
-const chartConfig = {
+const barChartConfig = {
   count: {
     label: "Count",
   },
@@ -60,6 +60,36 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
+
+const monthlyAdditionsData = companies.reduce((acc, company) => {
+  const month = new Date(company.dateAdded).toLocaleString('default', { month: 'short', year: '2-digit' });
+  const existing = acc.find(item => item.month === month);
+  if (existing) {
+    existing.count++;
+  } else {
+    acc.push({ month, count: 1 });
+  }
+  return acc;
+}, [] as { month: string, count: number }[]).sort((a,b) => new Date('1 ' + a.month) > new Date('1 ' + b.month) ? 1: -1);
+
+
+const lineChartConfig = {
+  count: {
+    label: "Companies",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig
+
+const expirationData = [
+    { name: 'Total Expired', value: stats.totalExpired, color: 'hsl(var(--chart-5))' },
+    { name: 'Upcoming Expired', value: stats.upcomingExpired, color: 'hsl(var(--chart-4))' },
+]
+
+const pieChartConfig = {
+    value: { label: 'Count' },
+    "Total Expired": { label: "Total Expired", color: 'hsl(var(--chart-5))' },
+    "Upcoming Expired": { label: "Upcoming Expired (30d)", color: 'hsl(var(--chart-4))' },
+}
 
 interface StatCardProps {
   title: string;
@@ -106,6 +136,7 @@ export default function DashboardPage() {
           y: 0,
           duration: 0.5,
           delay: 0.3,
+          stagger: 0.2,
           ease: 'power2.out',
         }
       );
@@ -121,30 +152,94 @@ export default function DashboardPage() {
         <StatCard title="Upcoming Expired (30d)" value={stats.upcomingExpired} icon={CalendarClock} />
         <StatCard title="Total Expired" value={stats.totalExpired} icon={CalendarX2} />
       </div>
-      <div className="mt-6 dashboard-chart opacity-0">
-        <Card>
-          <CardHeader>
-            <CardTitle>Document Status Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-              <BarChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="status"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Bar dataKey="count" radius={4} />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+      <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="dashboard-chart opacity-0">
+            <Card>
+            <CardHeader>
+                <CardTitle>Document Status Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer config={barChartConfig} className="min-h-[200px] w-full">
+                <BarChart accessibilityLayer data={barChartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                    dataKey="status"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    />
+                    <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />}
+                    />
+                    <Bar dataKey="count" radius={4} />
+                </BarChart>
+                </ChartContainer>
+            </CardContent>
+            </Card>
+        </div>
+        <div className="dashboard-chart opacity-0">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Monthly Company Additions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={lineChartConfig} className="min-h-[200px] w-full">
+                        <LineChart
+                            accessibilityLayer
+                            data={monthlyAdditionsData}
+                            margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+                        >
+                            <CartesianGrid vertical={false} />
+                            <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                            <Line type="monotone" dataKey="count" stroke="hsl(var(--chart-3))" strokeWidth={2} dot={false} />
+                        </LineChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+        </div>
+        <div className="dashboard-chart opacity-0">
+             <Card>
+                <CardHeader>
+                    <CardTitle>Expiration Status</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={pieChartConfig} className="min-h-[200px] w-full">
+                        <PieChart accessibilityLayer>
+                            <RechartsTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                            <Pie
+                                data={expirationData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="hsl(var(--chart-1))"
+                                labelLine={false}
+                                label={({ cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                                    const RADIAN = Math.PI / 180;
+                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                    const x = cy + radius * Math.cos(-midAngle * RADIAN);
+                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                                    return (
+                                        <text x={x} y={y} fill="white" textAnchor={x > cy ? 'start' : 'end'} dominantBaseline="central">
+                                            {`${(percent * 100).toFixed(0)}%`}
+                                        </text>
+                                    );
+                                }}
+                            >
+                                {expirationData.map((entry, index) => (
+                                     <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <Legend content={<p className="text-xs text-center text-muted-foreground pt-2">Breakdown of expired documents</p>}/>
+                        </PieChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+        </div>
       </div>
     </div>
   );
