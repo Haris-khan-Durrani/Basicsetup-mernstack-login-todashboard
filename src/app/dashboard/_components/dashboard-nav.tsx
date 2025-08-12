@@ -16,6 +16,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useCustomPages } from '@/hooks/use-custom-pages';
 import { useNavigationLoader } from '@/hooks/use-navigation-loader';
@@ -32,6 +33,7 @@ export function DashboardNav() {
     const pathname = usePathname();
     const { customPages } = useCustomPages();
     const { setIsNavigating } = useNavigationLoader();
+    const { setOpenMobile, isMobile } = useSidebar();
 
     useEffect(() => {
         // When the pathname changes, it means navigation is complete.
@@ -41,6 +43,9 @@ export function DashboardNav() {
     const handleNavigation = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
       if (pathname !== href) {
         setIsNavigating(true);
+      }
+      if (isMobile) {
+        setOpenMobile(false);
       }
     };
 
