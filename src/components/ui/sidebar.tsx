@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -553,7 +554,8 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    const asChild = _asChild
+    const { as, ...otherProps } = props
+    const asChild = _asChild ?? as
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
@@ -564,7 +566,7 @@ const SidebarMenuButton = React.forwardRef<
         data-size={size}
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-        {...props}
+        {...otherProps}
       />
     )
 
@@ -762,5 +764,3 @@ export {
   SidebarTrigger,
   useSidebar,
 }
-
-    
