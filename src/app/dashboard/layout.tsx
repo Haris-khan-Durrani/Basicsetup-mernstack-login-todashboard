@@ -9,6 +9,7 @@ import {
   FolderArchive,
   LayoutDashboard,
   LogOut,
+  Settings,
   Workflow,
 } from 'lucide-react';
 
@@ -38,6 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/initiate', icon: FilePlus2, label: 'Initiate Process' },
     { href: '/dashboard/submitted', icon: FolderArchive, label: 'All Submitted' },
     { href: '/dashboard/expiring', icon: CalendarClock, label: 'Upcoming Expired' },
+    { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
