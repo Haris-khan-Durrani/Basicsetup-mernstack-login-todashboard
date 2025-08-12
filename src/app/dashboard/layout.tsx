@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -11,6 +11,7 @@ import {
   LogOut,
   Settings,
   Workflow,
+  Link as LinkIcon,
 } from 'lucide-react';
 
 import {
@@ -24,10 +25,12 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { CustomPage, useCustomPages } from '@/hooks/use-custom-pages';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { customPages } = useCustomPages();
 
   const handleLogout = () => {
     // In a real app, clear session/token here
@@ -53,17 +56,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href}>
-                  <SidebarMenuButton
-                    as="a"
-                    size="sm"
-                    isActive={pathname === item.href}
-                    tooltip={{ children: item.label }}
-                  >
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
+                <SidebarMenuButton
+                  as={Link}
+                  href={item.href}
+                  size="sm"
+                  isActive={pathname === item.href}
+                  tooltip={{ children: item.label }}
+                >
+                  <item.icon />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+             {customPages.map((page) => (
+              <SidebarMenuItem key={page.slug}>
+                 <SidebarMenuButton
+                  as={Link}
+                  href={`/dashboard/iframe/${page.slug}`}
+                  size="sm"
+                  isActive={pathname === `/dashboard/iframe/${page.slug}`}
+                  tooltip={{ children: page.title }}
+                >
+                  <LinkIcon />
+                  <span>{page.title}</span>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
