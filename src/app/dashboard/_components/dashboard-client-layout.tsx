@@ -2,8 +2,9 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { LogOut, Workflow } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -27,7 +28,13 @@ export function DashboardClientLayout({ children }: { children: React.ReactNode 
     <>
       <Sidebar collapsible="icon" className="border-sidebar-border">
         <SidebarHeader className="h-14 items-center justify-center p-2 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0">
-          <Workflow className="size-7 text-sidebar-foreground transition-all group-data-[collapsible=icon]:size-6" />
+          <Image 
+            src="https://netxsites.com/wp-content/uploads/2025/05/favicon-netxsite-logo-removebg-preview-150x150.png" 
+            alt="ProcessPulse Logo" 
+            width={28} 
+            height={28} 
+            className="size-7 transition-all group-data-[collapsible=icon]:size-6" 
+          />
           <div className="font-bold text-lg text-sidebar-foreground transition-opacity group-data-[collapsible=icon]:opacity-0">ProcessPulse</div>
         </SidebarHeader>
         <SidebarContent>
