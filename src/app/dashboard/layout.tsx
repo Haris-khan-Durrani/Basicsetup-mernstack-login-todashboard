@@ -1,49 +1,27 @@
+
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import {
-  CalendarClock,
-  FilePlus2,
-  FolderArchive,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  Workflow,
-  Link as LinkIcon,
-} from 'lucide-react';
-
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { LogOut, Workflow } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { CustomPage, useCustomPages } from '@/hooks/use-custom-pages';
+import { DashboardNav } from './_components/dashboard-nav';
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const router = useRouter();
-  const { customPages } = useCustomPages();
 
   const handleLogout = () => {
     // In a real app, clear session/token here
     router.push('/login');
   };
-
-  const navItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/dashboard/initiate', icon: FilePlus2, label: 'Initiate Process' },
-    { href: '/dashboard/submitted', icon: FolderArchive, label: 'All Submitted' },
-    { href: '/dashboard/expiring', icon: CalendarClock, label: 'Upcoming Expired' },
-    { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
-  ];
 
   return (
     <SidebarProvider>
@@ -53,36 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="font-bold text-lg text-sidebar-foreground transition-opacity group-data-[collapsible=icon]:opacity-0">ProcessPulse</div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  as={Link}
-                  href={item.href}
-                  size="sm"
-                  isActive={pathname === item.href}
-                  tooltip={{ children: item.label }}
-                >
-                  <item.icon />
-                  <span>{item.label}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-             {customPages.map((page) => (
-              <SidebarMenuItem key={page.slug}>
-                 <SidebarMenuButton
-                  as={Link}
-                  href={`/dashboard/iframe/${page.slug}`}
-                  size="sm"
-                  isActive={pathname === `/dashboard/iframe/${page.slug}`}
-                  tooltip={{ children: page.title }}
-                >
-                  <LinkIcon />
-                  <span>{page.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+            <DashboardNav />
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
