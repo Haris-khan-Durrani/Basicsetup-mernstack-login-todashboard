@@ -3,8 +3,15 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Building2, CalendarClock, CalendarX2, FileCheck2, FileClock, type LucideIcon } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import type { Company } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartConfig,
+} from "@/components/ui/chart"
 
 const companies: Company[] = [
   { id: 1, name: "Innovate Inc.", status: 'submitted', dateAdded: '2024-07-15T10:00:00Z', expirationDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString() },
@@ -34,6 +41,25 @@ const stats = {
   }).length,
   totalExpired: companies.filter(c => new Date(c.expirationDate) < today).length,
 };
+
+const chartData = [
+  { status: "Pending", count: stats.docsPending, fill: "hsl(var(--chart-1))" },
+  { status: "Submitted", count: stats.docsSubmitted, fill: "hsl(var(--chart-2))" },
+];
+
+const chartConfig = {
+  count: {
+    label: "Count",
+  },
+  pending: {
+    label: "Pending",
+    color: "hsl(var(--chart-1))",
+  },
+  submitted: {
+    label: "Submitted",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig
 
 interface StatCardProps {
   title: string;
@@ -72,6 +98,17 @@ export default function DashboardPage() {
           ease: 'power2.out',
         }
       );
+       gsap.fromTo(
+        '.dashboard-chart',
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          delay: 0.3,
+          ease: 'power2.out',
+        }
+      );
     }
   }, []);
 
@@ -83,6 +120,31 @@ export default function DashboardPage() {
         <StatCard title="Submitted Documents" value={stats.docsSubmitted} icon={FileCheck2} />
         <StatCard title="Upcoming Expired (30d)" value={stats.upcomingExpired} icon={CalendarClock} />
         <StatCard title="Total Expired" value={stats.totalExpired} icon={CalendarX2} />
+      </div>
+      <div className="mt-6 dashboard-chart opacity-0">
+        <Card>
+          <CardHeader>
+            <CardTitle>Document Status Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+              <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="status"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Bar dataKey="count" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
