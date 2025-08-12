@@ -27,14 +27,16 @@ export function DashboardClientLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <Sidebar collapsible="icon" className="border-sidebar-border">
-        <SidebarHeader className="h-14 items-center justify-center p-2 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0">
-          <Image 
-            src="https://netxsites.com/wp-content/uploads/2025/05/favicon-netxsite-logo-removebg-preview-150x150.png" 
-            alt="ProcessPulse Logo" 
-            width={28} 
-            height={28} 
-            className="size-7 transition-all group-data-[collapsible=icon]:size-6" 
-          />
+        <SidebarHeader className="h-20 items-center justify-center p-2 group-data-[collapsible=icon]:h-14 group-data-[collapsible=icon]:p-0">
+          <div className="flex items-center justify-center bg-white rounded-full p-1 size-12 transition-all group-data-[collapsible=icon]:size-10">
+            <Image 
+              src="https://netxsites.com/wp-content/uploads/2025/05/favicon-netxsite-logo-removebg-preview-150x150.png" 
+              alt="ProcessPulse Logo" 
+              width={40} 
+              height={40}
+              className="transition-all"
+            />
+          </div>
           <div className="font-bold text-lg text-sidebar-foreground transition-opacity group-data-[collapsible=icon]:opacity-0">ProcessPulse</div>
         </SidebarHeader>
         <SidebarContent>
