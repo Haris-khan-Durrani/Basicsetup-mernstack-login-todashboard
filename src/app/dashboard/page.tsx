@@ -11,6 +11,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   ChartConfig,
+  ChartLegend,
+  ChartLegendContent,
 } from "@/components/ui/chart"
 
 const companies: Company[] = [
@@ -81,15 +83,15 @@ const lineChartConfig = {
 } satisfies ChartConfig
 
 const expirationData = [
-    { name: 'Total Expired', value: stats.totalExpired, color: 'hsl(var(--chart-5))' },
-    { name: 'Upcoming Expired', value: stats.upcomingExpired, color: 'hsl(var(--chart-4))' },
+    { name: 'Total Expired', value: stats.totalExpired, color: 'hsl(var(--chart-5))', fill: 'hsl(var(--chart-5))' },
+    { name: 'Upcoming Expired', value: stats.upcomingExpired, color: 'hsl(var(--chart-4))', fill: 'hsl(var(--chart-4))' },
 ]
 
 const pieChartConfig = {
     value: { label: 'Count' },
     "Total Expired": { label: "Total Expired", color: 'hsl(var(--chart-5))' },
     "Upcoming Expired": { label: "Upcoming Expired (30d)", color: 'hsl(var(--chart-4))' },
-}
+} satisfies ChartConfig;
 
 interface StatCardProps {
   title: string;
@@ -234,7 +236,7 @@ export default function DashboardPage() {
                                      <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
-                            <Legend content={<p className="text-xs text-center text-muted-foreground pt-2">Breakdown of expired documents</p>}/>
+                            <ChartLegend content={<ChartLegendContent payload={expirationData} />} />
                         </PieChart>
                     </ChartContainer>
                 </CardContent>
