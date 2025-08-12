@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { DashboardNav } from './dashboard-nav';
+import { GlobalLoader } from './global-loader';
 
 
 export function DashboardClientLayout({ children }: { children: React.ReactNode }) {
@@ -26,6 +27,7 @@ export function DashboardClientLayout({ children }: { children: React.ReactNode 
 
   return (
     <>
+      <GlobalLoader />
       <Sidebar collapsible="icon" className="border-sidebar-border">
         <SidebarHeader className="h-20 items-center justify-center p-2 group-data-[collapsible=icon]:h-14 group-data-[collapsible=icon]:p-0">
           <div className="flex items-center justify-center bg-white rounded-full p-1 size-12 transition-all group-data-[collapsible=icon]:size-10">

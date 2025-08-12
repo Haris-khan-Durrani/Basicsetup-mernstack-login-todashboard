@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React, { useEffect } from 'react';
 import {
   CalendarClock,
   FilePlus2,
@@ -17,6 +18,7 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import { useCustomPages } from '@/hooks/use-custom-pages';
+import { useNavigationLoader } from '@/hooks/use-navigation-loader';
 
 const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -29,7 +31,19 @@ const navItems = [
 export function DashboardNav() {
     const pathname = usePathname();
     const { customPages } = useCustomPages();
+    const { setIsNavigating } = useNavigationLoader();
+
+    useEffect(() => {
+        // When the pathname changes, it means navigation is complete.
+        setIsNavigating(false);
+    }, [pathname, setIsNavigating]);
     
+    const handleNavigation = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (pathname !== href) {
+        setIsNavigating(true);
+      }
+    };
+
     return (
          <SidebarMenu>
             {navItems.map((item) => (
@@ -40,6 +54,7 @@ export function DashboardNav() {
                   size="sm"
                   isActive={pathname === item.href}
                   tooltip={{ children: item.label }}
+                  onClick={handleNavigation(item.href)}
                 >
                   <item.icon />
                   <span>{item.label}</span>
@@ -54,6 +69,7 @@ export function DashboardNav() {
                   size="sm"
                   isActive={pathname === `/dashboard/iframe/${page.slug}`}
                   tooltip={{ children: page.title }}
+                  onClick={handleNavigation(`/dashboard/iframe/${page.slug}`)}
                 >
                   <LinkIcon />
                   <span>{page.title}</span>
