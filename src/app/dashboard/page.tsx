@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Building2, CalendarClock, CalendarX2, FileCheck2, FileClock, type LucideIcon } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, LineChart, Line, PieChart, Pie, Tooltip as RechartsTooltip, Cell, Legend } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, LineChart, Line, PieChart, Pie, Tooltip as RechartsTooltip, Cell } from "recharts"
 import type { Company } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
